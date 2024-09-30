@@ -1,0 +1,4 @@
+# 因為是用 python image，所以要安裝這個 Django APP 所需要的 python 的套件
+Django==3.2.25
+django-extensions==3.2.3
+gunicorn==22.0.0
