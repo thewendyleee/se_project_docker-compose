@@ -1,0 +1,32 @@
+# 兩個 services: web, nginx，各自有 image
+
+services:
+  # web: django + gunicorn
+  web:
+    volumes:
+      - web_data:/web/se_project
+      - sqllite_db:/db.sqlite3
+
+    build: ./web
+    image: wendys94088/se_project:django-docker-compose-web
+
+    ports:
+      - "8000:8000"
+    # restart: always
+
+  nginx:
+    build: ./nginx
+    volumes:
+      - web_data:/web/se_project
+    ports:
+      - "80:80"
+    # nginx 依賴 web，在 nginx 啟動前 web 會先啟動
+    depends_on:
+      - web
+
+    image: wendys94088/se_project:django-docker-compose-nginx
+    # restart: always
+
+volumes:
+  web_data:
+  sqllite_db:
