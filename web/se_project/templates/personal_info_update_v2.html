@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}
+個人資料
+{% endblock title %}
+
+{% block h2title %}
+個人資料
+{% endblock h2title %}
+
+{% block mainBody %}
+<center>
+  <form action="/upload" method="POST">
+    {% csrf_token %}
+  <div class="col">
+      <li class="list-item m-4">帳號:  &nbsp&nbsp&nbsp&nbsp<input name="account" type="text" class="Radius" value={{account}} required></li>
+      <li class="list-item m-4">密碼:  &nbsp&nbsp&nbsp&nbsp<input name="password" type="text" class="Radius" value={{password}} required></li>
+      <li class="list-item m-4">姓名:  &nbsp&nbsp&nbsp&nbsp<input name="name" type="text" class="Radius" value={{name}} required></li>
+      <li class="list-item m-4">性別:  &nbsp&nbsp&nbsp&nbsp<select name="gender">
+        {% comment %} <option value="None" selected>請選擇性別</option> {% endcomment %}
+        {% if gender == "男" %}
+          <option value="男" selected>男</option>
+          <option value="女">女</option>
+          <option value="其他">其他</option>
+        {% elif gender == "女" %}
+          <option value="男">男</option>
+          <option value="女" selected>女</option>
+          <option value="其他">其他</option>
+        {% elif gender == "其他" %}
+          <option value="男">男</option>
+          <option value="女">女</option>
+          <option value="其他" selected>其他</option>
+        {% endif %}
+      </select></li>
+      <li class="list-item m-4">生日:  &nbsp&nbsp&nbsp&nbsp<input name="birth" type="date" class="Radius" value={{birth}} required></li>
+      <li class="list-item m-4">住址:  &nbsp&nbsp&nbsp&nbsp<input name="address" type="text" class="Radius" value={{address}} required></li>
+      <li class="list-item m-4">電話:  &nbsp&nbsp&nbsp&nbsp<input name="tel_number" type="text" class="Radius" value={{tel_number}} required></li>
+  </div>
+
+  <div class="position-absolute start-50 mt-5 translate-middle">
+    <input type="submit" class="btn btn-secondary btn-word me-5"  value="確認">
+    <input type="button" class="btn btn-secondary btn-word me-5" onclick="location.href='/personal_info'" value="取消">
+  </div>
+
+</form>
+
+  <script>
+
+  </script>
+</center>
+{% endblock mainBody %}

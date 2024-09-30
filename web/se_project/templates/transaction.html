@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block h2title %}
+    交易紀錄
+{% endblock h2title %}
+
+{% block mainBody %}
+<center>
+    <div class="list-group col-md-5">
+      {% for trans in trans_ID %}
+      <a href="../transaction_detail/{{trans}}/"  class="list-group-item list-group-item-action d-inline-flex gap-3 py-3" aria-current="true">
+        <div class="d-flex gap-2 w-100 justify-content-between">
+          <div>
+            <h6 class="mb-0">交易紀錄編號     {% filter slice:"0:8" %}{{trans}}{% endfilter %}</h6>
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </center>
+    
+{% endblock mainBody %}
+
+<script>
+
+</script>

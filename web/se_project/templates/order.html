@@ -1,0 +1,100 @@
+{% extends "base.html"%}
+{% block title %}
+    租車系統-查看訂單
+{% endblock title %}
+{% block h2title %}
+    訂單資訊
+{% endblock h2title %}
+
+{% block mainBody %}
+   {% load static%}
+   <center>
+    <form action="/order_upload" method="POST">
+        {% csrf_token %}
+    <br>
+        <div class="mb-1 row">
+            <label for="Text1" class="col-sm-3 col-form-label text-end">交易編號：</label>
+            <label for="Text1" class="col-sm-7 col-form-label col-3 text-center">{{Code}}</label>
+        </div>
+        <div class="mb-1 row">
+            <label for="Text1" class="col-sm-3 col-form-label text-end">用車時間：</label>
+            <label for="Text1" class="col-sm-7 col-form-label col-3 text-center">{{activeT}}</label>
+        </div>
+        <div class="mb-1 row">
+            <label for="Text1" class="col-sm-3 col-form-label text-end">還車時間：</label>
+            <label for="Text1" class="col-sm-7 col-form-label col-3 text-center">{{returnT}}</label>
+        </div>
+        <div class="mb-1 row">   {% comment %}   # 先刪掉，之後考慮改成租車站點 {% endcomment %}
+            <label for="Text1" class="col-sm-3 col-form-label text-end">租車站點：</label>
+            <label for="Text1" class="col-sm-7 col-form-label col-3 text-center">{{Place}}</label>
+        </div>
+        <div class="mb-1 row">
+            <label for="Text1" class="col-sm-3 col-form-label text-end">車輛資訊：</label>
+            <label for="Text1" class="col-sm-7 col-form-label col-3 text-center">{{CarN}}</label>
+        </div>
+        <div class="mb-1 row">
+            <label for="Text1" class="col-sm-3 col-form-label text-end">訂單狀態：</label>
+            <label for="Text1" class="col-sm-7 col-form-label col-3 text-center" id="CarS">{{state}}</label>
+        </div>
+        {% if btn_text == "還車" %}
+        <div class="mb-1 row">
+            <label for="return_station" class="col-sm-3 col-form-label text-end">還車站點：</label>
+            <div class="col-sm-7 center">
+                <select class="form-select" aria-label="Default select example" name="return_station">
+                    {% for station in stations %}
+                        <option value={{station}}>{{station}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        {% endif %}
+   <br><br>
+  
+       <input class="btn btn-outline-success me-2" type="submit" value={{btn_text}} id="btn_active" name='unlock' onclick="Activate()" >
+       {% if Disable %}
+       <input class="btn btn-outline-success me-2" type="submit" value="刪除訂單" id="delete_btn" name='delete' onclick="triggerAlert();" disabled>
+            {% else %}
+        <input class="btn btn-outline-success me-2" type="submit" value="刪除訂單" id="delete_btn" name='delete' onclick="triggerAlert();">
+        {% endif %}
+       <input class="btn btn-outline-success me-2" type="button" value="回租車頁面" onclick="location.href='/rent'">
+   </form>
+   </center>
+<br><br><br><br>
+
+
+<script>
+
+     date = new Date();
+     year = date.getFullYear();
+     month = date.getMonth() + 1;
+     day = date.getDate();
+     h = date.getHours();
+     m = date.getMinutes();
+
+    
+     function triggerAlert() {
+        {% if messages %}
+                {% for msg in messages %}
+                    alert('{{ msg.message }}')
+                {% endfor %}
+        {% endif %}
+
+        //let delete_btn = document.getElementById("delete_btn");
+        //let unlock_btn_txt = document.getElementById("btn_active").value;
+        //if(unlock_btn_txt=="解鎖"){
+          //  delete_btn.removeAttribute("disabled")
+       // }else{
+          //  delete_btn.setAttribute("disabled", "disabled")
+       // }
+     }
+    
+     function Activate(){
+         document.getElementById("CarS").textContent = "已付款";
+         //document.getElementById("btn_active").value= "還車";
+         showtxt.innerHTML = year + " / "+ month + " / " + day + " - " + h + ":" + m ;
+     }
+     function Delete(){
+         alert =('您已取消確認');
+     }
+</script>
+{% endblock mainBody %}

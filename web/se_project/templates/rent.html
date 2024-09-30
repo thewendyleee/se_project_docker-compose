@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}
+    租車系統-租借車
+{% endblock title %}
+
+{% block h2title %}
+    租借車
+{% endblock h2title %}
+
+{% block mainBody %}
+
+    <form class="needs-validation" action="/rent/" method='post' name="myform" novalidate>
+        {% csrf_token %}
+        <div class="row mb-3">
+            <label for="colFormLabel" class="col-sm-3 col-form-label">選擇站點：</label>
+            <div class="col-sm-9">
+                <p><select class="form-select" aria-label="Default select example" id="place" name="place"
+                           onchange="Change();">
+                    <option value="" selected disabled>-- 請選擇 --</option>
+                    {% for station in stations %}
+                        <option value={{station}}>{{station}}</option>
+                    {% endfor %}
+                </select></p>
+            </div>
+            <div class="col-sm">
+                <label for="colFormLabel" class="col-sm-3 col-form-label">剩餘腳踏車:</label>
+                <label for="colFormLabel" class="col-sm-2 col-form-label" id="bike_num">{{ num_bike }}輛</label>
+                <label for="colFormLabel" class="col-sm-3 col-form-label">剩餘電動滑板車:</label>
+                <label for="colFormLabel" class="col-sm-2 col-form-label" id="scooter_num">{{ num_scooter }}輛</label>
+            </div>
+        </div>
+        
+        <div class="row mb-3">
+            <label for="colFormLabel" class="col-sm-3 col-form-label">選擇車種：</label>
+            <div class="col-sm-9">
+                <select class="form-select" aria-label="Default select example" id="cartype" name="cartype">
+                    <option value="" selected disabled>-- 請選擇 --</option>
+                    <option value="腳踏車">腳踏車</option>
+                    <option value="電動滑板車">電動滑板車</option>
+                </select>
+            </div>
+        </div>
+        <center>
+            <div class="col-sm">
+                <form class="container-fluid justify-content-start">
+                        <button class="btn btn-outline-success me-2" type="submit" id="reserved" disabled>預約</button>
+                </form>
+            </div>
+        </center>
+    </form>
+
+
+
+    <script>
+        function triggerAlert() {
+            {% if messages %}
+                {% for msg in messages %}
+                    alert('{{ msg.message }}')
+                {% endfor %}
+            {% endif %}
+        }
+
+        $("#place").mouseleave(
+            function () {
+                var place_options = $("#place option:selected");
+                var Place = place_options.text();
+                var cartype_options = $("#cartype option:selected");
+                var CarT = cartype_options.text();
+
+                var url = "/rent_car_num_check/";
+
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: {
+                        "place": Place,
+                        "cartype": CarT,
+                        "csrfmiddlewaretoken": "{{ csrf_token }}"
+                    },  // 请求要发送的数据  常在post请求中使用，get请求只需要拼接请求的url就可以
+                    success: function (data) {
+                        console.log(data);
+                        $("#place_check").text(Place);
+                        $("#cartype_check").text(CarT);
+                        $("#bike_num").text(data["bike"] + "輛");
+                        $("#scooter_num").text(data["scooter"] + "輛");
+
+                        // 如果數量是0就不讓他選其車種
+                        if(data["bike"] == 0)
+                            document.getElementById("cartype").options[1].disabled = true;
+                        else
+                            document.getElementById("cartype").options[1].disabled = false;
+
+                        if (data["scooter"] == 0)
+                            document.getElementById("cartype").options[2].disabled = true;
+                        else
+                            document.getElementById("cartype").options[2].disabled = false;
+
+                        // 如果是兩個車種都是0不能預約
+                        if(data["bike"] == 0 & data["scooter"] == 0){
+                            document.getElementById("reserved").disabled = true;
+                        }
+                        else{
+                            document.getElementById("reserved").disabled = false;
+                        }
+
+
+                    },
+                    error: function (error) {
+
+                    }
+                })
+            }
+        )
+
+    </script>
+
+{% endblock mainBody %}
